@@ -74,6 +74,7 @@ char dookdik[2][6] = { '/','-','-','o','\\',' ',   // น้องdookdik  **
 	}
 }*/
 
+
 char control()   //เช็คการกดปุ่ม ตอนเล่น
 {
 	if(kbhit()){
@@ -85,6 +86,9 @@ char control()   //เช็คการกดปุ่ม ตอนเล่น
 		if(ch== 27) {return 'x' ;}	//ESC
 	}return '-' ;  // non
 }
+
+
+
 
 void drawDD()    //แสดงDD
 { 
@@ -118,15 +122,17 @@ void play()
 	double fps = 30 , ptime = time(0)-2 ;
 	int countfps = 0 ;
 
-	DDposx = 50 ; DDposy = 40 ;  //ตำแหน่ง X Y  เริ่มต้น( Y-G )( บนน้อย , ล่างมาก )  **
+	int STX = 50 ,  STY = 35 ;	//ตำแหน่ง X Y เริ่ม  ( บนน้อย , ล่างมาก )  **
 
+	DDposx = STX ; DDposy = STY ;
 	int dx ;         //ตำแหน่ง X ในอนาคต
-	int vx = 2 ;     //ความเร็ว X  **
+	int vx = 1 ;     //ความเร็ว X  **
 	
-    double dy = DDposy ; 	 //ตำแหน่ง Y ในอนาคต    
-	double G  = 13 ; //ความสูงที่กระโดดได้  **
-	double vy = -G ; //ความเร็ว Y
-	int slow  = 5 ;  //gravity น้อย=ตกเร็ว  **
+    
+	int high  = 15 ; 	//ความสูงที่กระโดดได้  **
+	int slow  = 10 ;    //gravity น้อย=ตกเร็ว   ( น้อยกว่า high )  **
+	double dy = 0 ;		//ตำแหน่ง Y ในอนาคต
+	bool SY = 0 ;		//Status 0ขึ้น  1ลง
 
 
 	for(int i=0 ; i<4 ;i++){   //genbase 4x4
@@ -143,10 +149,9 @@ void play()
 		if(CT =='a') { dx = -vx ; }
 		if(CT =='d') { dx =  vx ; }
 
-		gotoxy(70,45); cout<<" vy = "<< vy <<"  ";
 		gotoxy(70,46); cout<<" dy= "<< dy <<"  ";
 
-		if(vy>0)
+		/*if(vy>0)
 		{
 			dy+=vy/slow;
 			vy++ ;
@@ -157,15 +162,26 @@ void play()
 			dy+=vy/slow;
 			vy++ ;
 			if(vy==0) vy=1;
+		}*/
+
+		if (SY) //ลง
+		{
+			dy+=(dy/slow) +0.5;
+			if(dy>=high) SY = 0 ;
+		}
+		else  //ขึ้น
+		{
+			dy-=(dy/slow) +0.5;
+			if(dy<=0) SY = 1 ;
 		}
 		
 		DDposx += dx ;
-		DDposy  = dy ;
+		DDposy  = dy+(STY-high) ;
 
 		if(DDposx<2) { DDposx = SCREEN_WIDTH-2 ; }  if(DDposx>SCREEN_WIDTH-2)  { DDposx = 2 ;}  //ชนขอบ X
 		if(DDposy<1) { DDposy = 1 ; }  if(DDposy>WIN_HEIGHT-1)    { DDposy = WIN_HEIGHT-1 ; }  //ชนขอบ Y
 
-		gotoxy(40,45); cout<<"  CT = "<<CT;             //Show data ปุ่มกด wasd
+		gotoxy(40,45); cout<<"  CT = "<<CT;             //Show data ปุ่มกด wasd-
 		gotoxy(50,45); cout<<"  X = " <<DDposx<<" ";    //Show data posX
 		gotoxy(60,45); cout<<"  Y = " <<DDposy<<" ";    //Show data posY
 	    gotoxy(10,45); cout<<"  FPS = ";                //Show data FPS
@@ -217,4 +233,7 @@ int main()
 		else if( op=='3') exit(0);
 
 	}while(1);
+
+
+	return 0;
 }
