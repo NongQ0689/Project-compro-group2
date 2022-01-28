@@ -85,6 +85,7 @@ char control()   //เช็คการกดปุ่ม ตอนเล่น
 		if(ch== 27) {return 'x' ;}	//ESC
 	}return '-' ;  // non
 }
+
 void drawDD()    //แสดงDD
 { 
 	gotoxy(DDposx,DDposy) ; cout<<'*' ; 
@@ -97,9 +98,10 @@ void eraseDD()  //ลบDD
 
 void genbase(int i , int j)  //genbase[i][j]  i=[0-3] , j=[0-3]
 {
-	baseposx[i] = (i+1)*20+rand()%5-2 ; // **
-	baseposy[j] = (j+1)*8+1 ;           // **
+	baseposx[i] = (i+1)*20-rand()%8 ; 		  // **
+	baseposy[j] = (j+1)*8+rand()%4;           // **
 }
+
 void drawbase(int i , int j)   //แสดงDD
 { 
 	gotoxy(baseposx[i],baseposy[j]) ; cout<<"==========" ; 
@@ -126,7 +128,6 @@ void play()
 	double vy = -G ; //ความเร็ว Y
 	int slow  = 5 ;  //gravity น้อย=ตกเร็ว  **
 
-    
 
 	for(int i=0 ; i<4 ;i++){   //genbase 4x4
 	for(int j=0 ; j<4 ;j++){
@@ -172,20 +173,21 @@ void play()
 		if(time(0)-ptime == 2 ) { ptime=time(0) ; gotoxy(18,45); fps = countfps/2 ; cout<<(fps)<<"   " ;  countfps=0 ; }  //update data FPS every 2sec
 		else { countfps++; }  
 
-
-	    drawDD();
+	{//draw
+		drawDD();
 		for(int i=0 ; i<4 ;i++){   // drawbase
 		for(int j=0 ; j<4 ;j++){
 			drawbase(i,j);
 		}}
-
-		Sleep(40); 
-		
-		eraseDD();
+	}
+		Sleep(20); 	
+	{//erase
+			eraseDD();
 		for(int i=0 ; i<4 ;i++){    //erasebase 
 		for(int j=0 ; j<4 ;j++){
 			erasebase(i,j);
 		}}
+		}
 		
 	}
 }
