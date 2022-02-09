@@ -74,6 +74,7 @@ char dookdik[2][6] = { '/','-','-','o','\\',' ',   // น้องdookdik  **
 	}
 }*/
 
+
 char control()   //เช็คการกดปุ่ม ตอนเล่น
 {
 	if(kbhit()){
@@ -86,6 +87,9 @@ char control()   //เช็คการกดปุ่ม ตอนเล่น
 	}return '-' ;  // non
 }
 
+
+
+
 void drawDD()    //แสดงDD
 { 
 	gotoxy(DDposx,DDposy) ; cout<<'*' ; 
@@ -95,44 +99,43 @@ void eraseDD()  //ลบDD
 	gotoxy(DDposx,DDposy) ; cout<<' ' ; 
 }
 
+class base
+{  
+	public :
+	int posx;
+	int posy;
+	bool appear;
+	base(int,int);
+};
 
-void genbase(int i , int j)  //genbase[i][j]  i=[0-3] , j=[0-3]
+base :: base(int i , int j)
 {
-	baseposx[i] = (i+1)*20-rand()%8 ; 		  // **
-	baseposy[j] = (j+1)*8+rand()%4;           // **
+	posx = (i+1)*20-rand()%8;
+	posy = (j+1)*8+rand()%4;
 }
 
-void drawbase(int i , int j)   //แสดงDD
+void drawbase(base *base)   //แสดงDD
 { 
-	gotoxy(baseposx[i],baseposy[j]) ; cout<<"==========" ; 
+	if(base->appear){gotoxy(base->posx,base->posy) ; cout<<"==========" ;}
+	else 			{gotoxy(base->posx,base->posy) ; cout<<"          " ;}
 }
-void erasebase(int i , int j)   //ลบDD
-{ 
-	gotoxy(baseposx[i],baseposy[j]) ; cout<<"          " ; 
-}
-
-
 
 void play()   
 {
 	double fps = 30 , ptime = time(0)-2 ;
 	int countfps = 0 ;
 
-	DDposx = 50 ; DDposy = 40 ;  //ตำแหน่ง X Y  เริ่มต้น( Y-G )( บนน้อย , ล่างมาก )  **
+	int STX = 50 ,  STY = 35 ;	//ตำแหน่ง X Y เริ่ม  ( บนน้อย , ล่างมาก )  **
 
+	DDposx = STX ; DDposy = STY ;
 	int dx ;         //ตำแหน่ง X ในอนาคต
-	int vx = 2 ;     //ความเร็ว X  **
+	int vx = 1 ;     //ความเร็ว X  **
 	
-    double dy = DDposy ; 	 //ตำแหน่ง Y ในอนาคต    
-	double G  = 13 ; //ความสูงที่กระโดดได้  **
-	double vy = -G ; //ความเร็ว Y
-	int slow  = 5 ;  //gravity น้อย=ตกเร็ว  **
-
-
-	for(int i=0 ; i<4 ;i++){   //genbase 4x4
-	for(int j=0 ; j<4 ;j++){
-		genbase(i,j);
-	}}
+    
+	int high  = 15 ; 	//ความสูงที่กระโดดได้  **
+	int slow  = 10 ;    //gravity น้อย=ตกเร็ว   ( น้อยกว่า high )  **
+	double dy = 0 ;		//ตำแหน่ง Y ในอนาคต
+	bool SY = 0 ;		//Status 0ขึ้น  1ลง
 
 	while(1)
 	{
@@ -140,55 +143,35 @@ void play()
 		if(CT =='x') { break ; } //exit ( esc )
 		if(CT =='w') { }
 		if(CT =='s') { }
-		if(CT =='a') { dx = -vx ; }
-		if(CT =='d') { dx =  vx ; }
+		if(CT =='a') { dx -=  vx ; }
+		if(CT =='d') { dx +=  vx ; }
 
-		gotoxy(70,45); cout<<" vy = "<< vy <<"  ";
 		gotoxy(70,46); cout<<" dy= "<< dy <<"  ";
 
-		if(vy>0)
-		{
-			dy+=vy/slow;
-			vy++ ;
-			if(vy==G) vy=-G+1;
-		} 
-		if(vy<0)
-		{
-			dy+=vy/slow;
-			vy++ ;
-			if(vy==0) vy=1;
-		}
+		//รอเขียน dy ใหม่
 		
-		DDposx += dx ;
-		DDposy  = dy ;
+		DDposx = dx ;
+		DDposy = dy ;
 
 		if(DDposx<2) { DDposx = SCREEN_WIDTH-2 ; }  if(DDposx>SCREEN_WIDTH-2)  { DDposx = 2 ;}  //ชนขอบ X
 		if(DDposy<1) { DDposy = 1 ; }  if(DDposy>WIN_HEIGHT-1)    { DDposy = WIN_HEIGHT-1 ; }  //ชนขอบ Y
 
-		gotoxy(40,45); cout<<"  CT = "<<CT;             //Show data ปุ่มกด wasd
-		gotoxy(50,45); cout<<"  X = " <<DDposx<<" ";    //Show data posX
-		gotoxy(60,45); cout<<"  Y = " <<DDposy<<" ";    //Show data posY
+		gotoxy(40,45); cout<<"  CT = "<<CT;             //Show data ปุ่มกด wasd-
+		gotoxy(50,45); cout<<"  X = " <<DDposx<<" ";    //Show data DDposX
+		gotoxy(60,45); cout<<"  Y = " <<DDposy<<" ";    //Show data DDposY
 	    gotoxy(10,45); cout<<"  FPS = ";                //Show data FPS
 
 		if(time(0)-ptime == 2 ) { ptime=time(0) ; gotoxy(18,45); fps = countfps/2 ; cout<<(fps)<<"   " ;  countfps=0 ; }  //update data FPS every 2sec
 		else { countfps++; }  
 
-	{//draw
+	//draw
 		drawDD();
-		for(int i=0 ; i<4 ;i++){   // drawbase
-		for(int j=0 ; j<4 ;j++){
-			drawbase(i,j);
-		}}
-	}
 		Sleep(20); 	
-	{//erase
-			eraseDD();
-		for(int i=0 ; i<4 ;i++){    //erasebase 
-		for(int j=0 ; j<4 ;j++){
-			erasebase(i,j);
-		}}
-		}
-		
+	//erase
+		eraseDD();
+	
+
+	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
 	}
 }
 
@@ -217,4 +200,7 @@ int main()
 		else if( op=='3') exit(0);
 
 	}while(1);
+
+
+	return 0;
 }
