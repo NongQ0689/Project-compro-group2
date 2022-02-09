@@ -202,7 +202,7 @@ int main()
 		system("cls");
         drawBorder();
 		gotoxy(10,5); cout<<" -------------------------- "; 
-		gotoxy(10,6); cout<<" |      test.exe       | "; 
+		gotoxy(10,6); cout<<" |      main.exe       | "; 
 		gotoxy(10,7); cout<<" --------------------------";
 		gotoxy(10,9); cout<<"1. Start Game";
 		gotoxy(10,10); cout<<"2. Instructions";	 
