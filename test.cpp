@@ -16,8 +16,6 @@ using namespace std;
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
 
-
-
 void gotoxy(int x, int y)
 {
 	CursorPosition.X = x;
@@ -77,10 +75,24 @@ char dookdik[4][5] = {   ' ','_','_','_',' ',
 //    
 //    dookdik
 
+
+	int STX = 50 ,  STY = 32 ;	//ตำแหน่ง X Y เริ่ม  ( บนน้อย , ล่างมาก )  **
+
+	int DDposx = STX ; int DDposy = STY ;
+	int dx = STX ;         //ตำแหน่ง X ในอนาคต
+	int vx = 2 ;     		//ความเร็ว X  **
+	
+    
+    double dy = DDposy ; 	 //ตำแหน่ง Y ในอนาคต  
+	double uy = 3 ;  //ความเร็วต้น Y **
+	double vy = -uy ; //ความเร็ว Y
+	double ay = 0.4 ; //แรงโน้มถ่วง
+
+
 void drawDD(){
 	for(int i=0; i<4; i++){
 		for(int j=0; j<5; j++){
-			gotoxy(DDposx+j-3,DDposy+i-2); cout<<dookdik[i][j];
+			gotoxy(DDposx+j-3,DDposy+i-3); cout<<dookdik[i][j];
 		}
 	}
 	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
@@ -89,21 +101,11 @@ void drawDD(){
 void eraseDD(){
 	for(int i=0; i<4; i++){
 		for(int j=0; j<5; j++){
-			gotoxy(DDposx+j-3,DDposy+i-2); cout<<' ';
+			gotoxy(DDposx+j-3,DDposy+i-3); cout<<' ';
 		}
 	}
 	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
 }
-
-
-/*void drawDD()    //แสดงDD
-{ 
-	gotoxy(DDposx,DDposy) ; cout<<'*' ; 
-}
-void eraseDD()  //ลบDD
-{ 
-	gotoxy(DDposx,DDposy) ; cout<<' ' ; 
-}*/
 
 class base
 {  
@@ -125,60 +127,31 @@ void base::showdata(int i ,int j )
 
 void base::gen(int i , int j)
 {
-	posx = (i+1)*20+rand()%5;
+	posx = (i+1)*30+rand()%5-10;
 	posy = (j+1)*10+rand()%5;
-	BL = 12+(rand()%4*2);
+	BL = 16+(rand()%4*2);
 }
-
 
 void drawbase(base base)   //แสดงDD
 { 
-	if(base.appear){gotoxy(base.posx-base.BL/2,base.posy) ; cout<<"==========" ;}
-	else 		   {gotoxy(base.posx-base.BL/2,base.posy) ; cout<<"          " ;}
+	if(base.appear){gotoxy(base.posx-base.BL/2,base.posy) ; for(int i=0;i<base.BL;i++) cout<<"=" ;}
+	else 		   {gotoxy(base.posx-base.BL/2,base.posy) ; for(int i=0;i<base.BL;i++) cout<<" " ;}
 }
-
 void erasebase(base base)   //แสดงDD
 { 
 	gotoxy(base.posx-base.BL/2,base.posy) ; cout<<"          " ;
 }
 
-bool check()
+base b[3][3];
+	
+void drawallbase()
 {
-	for(int i=0; i<3 ;i++)
-	{
-		for(int j=0; j<3 ;j++)
-		{
-			if(( DDposx >= b[i][j].posx-b[i][j].BL/2) && ( DDposx <= b[i][j].posx+b[i][j].BL/2))
-			{
-				
-			}
-		}
-	}
+	for(int i;i<3;i++){ for(int j;j<3;j++) { drawbase(b[i][j]); } }
 }
 
-	double fps = 30 , ptime = time(0)-2 ;
-	int countfps = 0 ;
-
-	int STX = 50 ,  STY = 35 ;	//ตำแหน่ง X Y เริ่ม  ( บนน้อย , ล่างมาก )  **
-
-	int DDposx = STX ; int DDposy = STY ;
-	int dx = STX ;         //ตำแหน่ง X ในอนาคต
-	int vx = 2 ;     		//ความเร็ว X  **
-	
-    
-    double dy = DDposy ; 	 //ตำแหน่ง Y ในอนาคต  
-	double uy = 4 ;  //ความเร็วต้น Y **
-	double vy = -uy ; //ความเร็ว Y
-	double ay = 0.4 ; //แรงโน้มถ่วง
-
-	base b[3][3];	
-
-
-void play()   
+void basestart ()	//สร้างฐาน 3x3
 {
-
-
-	for(int i=0; i<3 ;i++)
+	for(int i=0; i<3 ;i++) 
 	{
 		for(int j=0; j<3 ;j++)
 		{
@@ -187,6 +160,25 @@ void play()
 			b[i][j].showdata(i,j);
 		}
 	}
+}
+
+bool check(base b)
+{
+	bool x = (( DDposx >= b.posx-b.BL/2) && ( DDposx <= b.posx+b.BL/2));
+	bool y = ( DDposy == b.posy);
+	if( x&&y)
+	{
+		b.appear = 0;
+		return 1;
+	}
+	return 0;
+}
+
+void play()   
+{
+
+	double fps = 30 , ptime = time(0)-2 ;
+	int countfps = 0 ;
 
 
 	while(1)
@@ -208,8 +200,6 @@ void play()
 		vy += ay ;
 		if( vy > uy ) vy = -uy;
 
-
-
 		DDposx += dx ;
 		DDposy = dy ;
 
@@ -224,12 +214,12 @@ void play()
 		if(time(0)-ptime == 2 ) { ptime=time(0) ; gotoxy(18,45); fps = countfps/2 ; cout<<(fps)<<"   " ;  countfps=0 ; }  //update data FPS every 2sec
 		else { countfps++; }  
 
+
 	//draw
 		drawDD();
-		for(int i;i<3;i++){ for(int j;j<3;j++) { drawbase(b[i][j]); } }
+		drawallbase();
 		Sleep(10); 	
 	//erase
-		for(int i;i<3;i++){ for(int j;j<3;j++) erasebase(b[i][j]); }
 		eraseDD();
 	
 
@@ -260,7 +250,7 @@ int main()
 
 		char op = getche();
 		     if( op=='1') { system("cls"); drawBorder(); play(); }
-		else if( op=='2') {drawDD(); getche();}
+		else if( op=='2') {drawDD();getche();}
 		else if( op=='3') exit(0);
 
 	}while(1);
