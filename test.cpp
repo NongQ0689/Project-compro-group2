@@ -55,26 +55,6 @@ void setcursor(bool visible, DWORD size)
 	SetConsoleCursorInfo(console,&lpCursor);
 }
 
-
-char dookdik[2][6] = { '/','-','-','o','\\',' ',   // น้องdookdik  **
-					'|','_','_','_',' ','>' };
-
-//     ___ 
-//    (o>o)
-// 	  /___\
-//	   ll
-//    
-//    dookdik
-
-/*void drawDD(){
-	for(int i=0; i<2; i++){
-		for(int j=0; j<6; j++){
-			gotoxy(j+2,i+6); cout<<dookdik[i][j];
-		}
-	}
-}*/
-
-
 char control()   //เช็คการกดปุ่ม ตอนเล่น
 {
 	if(kbhit()){
@@ -87,17 +67,46 @@ char control()   //เช็คการกดปุ่ม ตอนเล่น
 	}return '-' ;  // non
 }
 
+char dookdik[4][5] = {   ' ','_','_','_',' ',
+						 '(','o','>','o',')',
+						 '/','_','_','_','\\',
+						 ' ','l',' ','l',' '  };
+					
+
+//     ___ 
+//    (o>o)
+// 	  /___\
+//	   l l 
+//    
+//    dookdik
+
+void drawDD(){
+	for(int i=0; i<4; i++){
+		for(int j=0; j<5; j++){
+			gotoxy(DDposx+j-3,DDposy+i-2); cout<<dookdik[i][j];
+		}
+	}
+	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
+}
+
+void eraseDD(){
+	for(int i=0; i<4; i++){
+		for(int j=0; j<5; j++){
+			gotoxy(DDposx+j-3,DDposy+i-2); cout<<' ';
+		}
+	}
+	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
+}
 
 
-
-void drawDD()    //แสดงDD
+/*void drawDD()    //แสดงDD
 { 
 	gotoxy(DDposx,DDposy) ; cout<<'*' ; 
 }
 void eraseDD()  //ลบDD
 { 
 	gotoxy(DDposx,DDposy) ; cout<<' ' ; 
-}
+}*/
 
 class base
 {  
@@ -105,20 +114,28 @@ class base
 	int posx;
 	int posy;
 	bool appear;
-	base(int,int);
+	void genbase(int,int);
 };
 
-base :: base(int i , int j)
+void base::genbase(int i , int j)
 {
 	posx = (i+1)*20-rand()%8;
 	posy = (j+1)*8+rand()%4;
 }
 
-void drawbase(base *base)   //แสดงDD
+void drawbase(base base)   //แสดงDD
 { 
-	if(base->appear){gotoxy(base->posx,base->posy) ; cout<<"==========" ;}
-	else 			{gotoxy(base->posx,base->posy) ; cout<<"          " ;}
+	if(base.appear){gotoxy(base.posx-5,base.posy) ; cout<<"==========" ;}
+	else 			{gotoxy(base.posx-5,base.posy) ; cout<<"          " ;}
 }
+
+void genbase(int i,int j)
+{
+	base b[i][j];
+	b[i][j].genbase(i,j);
+	drawbase(b[i][j]);
+}
+
 
 void play()   
 {
@@ -128,32 +145,55 @@ void play()
 	int STX = 50 ,  STY = 35 ;	//ตำแหน่ง X Y เริ่ม  ( บนน้อย , ล่างมาก )  **
 
 	DDposx = STX ; DDposy = STY ;
-	int dx ;         //ตำแหน่ง X ในอนาคต
-	int vx = 1 ;     //ความเร็ว X  **
+	int dx = STX ;         //ตำแหน่ง X ในอนาคต
+	int vx = 2 ;     		//ความเร็ว X  **
 	
     
-	int high  = 15 ; 	//ความสูงที่กระโดดได้  **
-	int slow  = 10 ;    //gravity น้อย=ตกเร็ว   ( น้อยกว่า high )  **
-	double dy = 0 ;		//ตำแหน่ง Y ในอนาคต
-	bool SY = 0 ;		//Status 0ขึ้น  1ลง
+    double dy = DDposy ; 	 //ตำแหน่ง Y ในอนาคต    
+	double G  = 13 ; //ความสูงที่กระโดดได้  **
+	double vy = -G ; //ความเร็ว Y
+	int slow  = 5 ;  //gravity น้อย=ตกเร็ว  **
 
+
+	for(int i=0; i<3 ;i++)
+	{
+		for(int j=0; j<3 ;j++)
+		{
+			genbase(i,j);
+		}
+	}
+	
 	while(1)
 	{
 		char CT = control() ;
 		if(CT =='x') { break ; } //exit ( esc )
 		if(CT =='w') { }
 		if(CT =='s') { }
-		if(CT =='a') { dx -=  vx ; }
-		if(CT =='d') { dx +=  vx ; }
+		if(CT =='a') { dx =  -vx ; }
+		if(CT =='d') { dx =  vx ; }
 
 		gotoxy(70,46); cout<<" dy= "<< dy <<"  ";
+		gotoxy(70,56); cout<<" vy= "<< vy <<"  ";
 
 		//รอเขียน dy ใหม่
-		
-		DDposx = dx ;
+
+		if(vy>0)
+		{
+			dy+=vy/slow;
+			vy++ ;
+			if(vy==G) vy=-G+1;
+		} 
+		if(vy<0)
+		{
+			dy+=vy/slow;
+			vy++ ;
+			if(vy==0) vy=1;
+		}
+
+		DDposx += dx ;
 		DDposy = dy ;
 
-		if(DDposx<2) { DDposx = SCREEN_WIDTH-2 ; }  if(DDposx>SCREEN_WIDTH-2)  { DDposx = 2 ;}  //ชนขอบ X
+		if(DDposx<7) { DDposx = SCREEN_WIDTH-2 ; }  if(DDposx>SCREEN_WIDTH-2)  { DDposx = 7 ;}  //ชนขอบ X
 		if(DDposy<1) { DDposy = 1 ; }  if(DDposy>WIN_HEIGHT-1)    { DDposy = WIN_HEIGHT-1 ; }  //ชนขอบ Y
 
 		gotoxy(40,45); cout<<"  CT = "<<CT;             //Show data ปุ่มกด wasd-
@@ -166,7 +206,7 @@ void play()
 
 	//draw
 		drawDD();
-		Sleep(20); 	
+		Sleep(10); 	
 	//erase
 		eraseDD();
 	
@@ -193,6 +233,8 @@ int main()
 		gotoxy(10,13); cout<<"Select option: ";
 
 
+		DDposx = 50 ;
+		DDposy = 35 ;
 
 		char op = getche();
 		     if( op=='1') { system("cls"); drawBorder(); play(); }
