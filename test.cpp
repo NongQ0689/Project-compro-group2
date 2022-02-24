@@ -107,10 +107,9 @@ void eraseDD(){
 	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
 }
 
-class base
+class ABC
 {  
 	public :
-	int BL ;
 	int posx;
 	int posy;
 	bool appear = 1 ;
@@ -119,10 +118,16 @@ class base
 	bool check();
 };
 
-bool base::check()
+void ABC::gen(int,int)
 {
-	bool x = (( DDposx >= posx-BL/2) && ( DDposx <= posx+BL/2));
-	bool y = ( DDposy >= posy-1);
+	
+}
+
+
+bool ABC::check()
+{
+	bool x = ( DDposx >= posx-2) && ( DDposx <= posx+2);
+	bool y = ( DDposy >= posy-4);
 	if( x&&y)
 	{
 		appear = 0;
@@ -133,54 +138,13 @@ bool base::check()
 	return 0;
 }
 
-void base::showdata(int i ,int j )
+void ABC::showdata(int i ,int j )
 {
 	gotoxy(40+i*40,50+j); 	cout<<"posx = "<<posx ;
 					 		cout<<"  posy = "<<posy;
-					 		cout<<"  BL = "<<BL;
 							cout<<"  AP = "<<appear;
 }
 
-void base::gen(int i , int j)
-{
-	posx = (i+1)*30+rand()%5-10;
-	posy = (j+1)*10+rand()%5;
-	BL = 16+(rand()%4*2);
-}
-
-
-void erasebase(base base)   //แสดงbase
-{ 
-	gotoxy(base.posx-base.BL/2,base.posy) ; for(int i=0;i<base.BL;i++) cout<<" " ;
-}
-
-void drawbase(base base)   //แสดงbase
-{ 
-	if(base.appear){gotoxy(base.posx-base.BL/2,base.posy) ; for(int i=0;i<base.BL;i++) cout<<"=" ;}
-	else erasebase(base);
-}
-
-base b[3][3];
-	
-void drawallbase()
-{
-	for(int i=0;i<3;i++){ for(int j=0;j<3;j++) { drawbase(b[i][j]); } }
-	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
-}
-
-
-void basestart ()	//สร้างฐาน 3x3
-{
-	for(int i=0; i<3 ;i++) 
-	{
-		for(int j=0; j<3 ;j++)
-		{
-			b[i][j].gen(i,j);
-			b[i][j].showdata(i,j);
-		}
-	}
-	drawallbase();
-}
 
 
 void play()   
@@ -189,7 +153,6 @@ void play()
 	double fps = 30 , ptime = time(0)-2 ;
 	int countfps = 0 ;
 
-	basestart();
 	int point = 0;
 
 	while(1)
@@ -227,12 +190,6 @@ void play()
 
 	//draw
 		drawDD();
-		//drawallbase();
-		/*for(int i=0;i<3;i++){ for(int j=0;j<3;j++) 
-		{
-			b[i][j].showdata(i,j);	
-			if(b[i][j].check()) point++ ; }
-		}*/
 		Sleep(10); 	
 	//erase
 		eraseDD();
@@ -265,7 +222,7 @@ int main()
 
 		char op = getche();
 		     if( op=='1') { system("cls"); drawBorder(); play(); }
-		else if( op=='2') {drawDD();basestart();getche();}
+		else if( op=='2') {drawDD();getche();}
 		else if( op=='3') exit(0);
 
 	}while(1);
