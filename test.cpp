@@ -107,24 +107,37 @@ void eraseDD(){
 	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
 }
 
-class ABC
+class ABCD
 {  
 	public :
+	char CH ;
 	int posx;
 	int posy;
 	bool appear = 1 ;
-	void gen(int,int);
+	void gen(int);
 	void showdata(int,int);
 	bool check();
 };
 
-void ABC::gen(int,int)
+void ABCD::gen(int i)
 {
-	
+	CH = i;
+	posy = 5;
+	posx = rand()%61+20;
+}
+
+void move(ABCD &f)
+{
+	if(f.appear)
+	{
+		f.posy +=1 ;
+		gotoxy(f.posx,f.posy-1); cout<<" ";
+		gotoxy(f.posx,f.posy); cout<<f.CH;
+	}
 }
 
 
-bool ABC::check()
+bool ABCD::check()
 {
 	bool x = ( DDposx >= posx-2) && ( DDposx <= posx+2);
 	bool y = ( DDposy >= posy-4);
@@ -138,22 +151,25 @@ bool ABC::check()
 	return 0;
 }
 
-void ABC::showdata(int i ,int j )
+void ABCD::showdata(int i ,int j )
 {
 	gotoxy(40+i*40,50+j); 	cout<<"posx = "<<posx ;
 					 		cout<<"  posy = "<<posy;
 							cout<<"  AP = "<<appear;
 }
 
-
+ABCD CH[5];
 
 void play()   
 {
 
-	double fps = 30 , ptime = time(0)-2 ;
+	double fps = 30 , ptime = time(0)-1 ;
 	int countfps = 0 ;
 
 	int point = 0;
+	int i = 10;
+	
+	for(int j=0;j<5;j++) CH[j].gen(i+j) ;
 
 	while(1)
 	{
@@ -184,7 +200,13 @@ void play()
 		gotoxy(60,45); cout<<"  Y = " <<DDposy<<" ";    //Show data DDposY
 	    gotoxy(10,45); cout<<"  FPS = ";                //Show data FPS
 
-		if(time(0)-ptime == 2 ) { ptime=time(0) ; gotoxy(18,45); fps = countfps/2 ; cout<<(fps)<<"   " ;  countfps=0 ; }  //update data FPS every 2sec
+		if(time(0)-ptime == 1 ) { ptime=time(0) ; gotoxy(18,45); fps = countfps ; cout<<(fps)<<"   " ;  countfps=0 ; 
+		
+		for(int i=0;i<5;i++)
+		move(CH[i]);
+		
+		
+		}  //update data FPS every 2sec
 		else { countfps++; }  
 
 
