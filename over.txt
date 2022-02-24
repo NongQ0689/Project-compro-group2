@@ -1,0 +1,14 @@
+void EndScreen(){
+	system("cls"); drawBorder();
+	gotoxy(10,6); cout << "------------------------------------------------------------------------- "<<endl;
+	gotoxy(10,8); cout << "|    *****      *     *       * ******       ****  *       ****** ****    |"<<endl;
+	gotoxy(10,9); cout << "|   *          * *    * *   * * *           *    *  *     * *     *   *   |"<<endl;
+	gotoxy(10,10); cout << "|   *  ****   *   *   *  * *  * *****       *    *   *   *  ****  ****    |"<<endl;
+	gotoxy(10,11); cout << "|   *  *  *  *******  *   *   * *           *    *    * *   *     * *     |"<<endl;
+	gotoxy(10,12); cout << "|    *****  *       * *       * ******       ****      *    ***** *   *   |"<<endl;
+	gotoxy(10,13); cout << " ------------------------------------------------------------------------- "<<endl;
+	gotoxy(10,15); //showscore();
+	gotoxy(10, 17); cout << "Press x to return to menu";
+	char op = getch();
+	if(op == 'x'){system("cls"); drawBordr(); menu();}
+}
