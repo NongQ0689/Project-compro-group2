@@ -111,30 +111,35 @@ void eraseDD()  //ลบDD
 class base
 {  
 	public :
+	int BL ;
 	int posx;
 	int posy;
-	bool appear;
-	void genbase(int,int);
+	bool appear = 1 ;
+	void gen(int,int);
+	void showdata(int,int);
 };
 
-void base::genbase(int i , int j)
+void base::showdata(int i ,int j )
 {
-	posx = (i+1)*20-rand()%8;
-	posy = (j+1)*8+rand()%4;
+	gotoxy(40+i*40,50+j); 	cout<<"posx = "<<posx ;
+					 		cout<<"  posy = "<<posy;
+					 		cout<<"  BL = "<<BL;
 }
+
+void base::gen(int i , int j)
+{
+	posx = (i+1)*20+rand()%5;
+	posy = (j+1)*10+rand()%5;
+	BL = 12+(rand()%3*2);
+}
+
 
 void drawbase(base base)   //แสดงDD
 { 
-	if(base.appear){gotoxy(base.posx-5,base.posy) ; cout<<"==========" ;}
-	else 			{gotoxy(base.posx-5,base.posy) ; cout<<"          " ;}
+	if(base.appear){gotoxy(base.posx-base.BL/2,base.posy) ; cout<<"==========" ;}
+	else 		   {gotoxy(base.posx-base.BL/2,base.posy) ; cout<<"          " ;}
 }
 
-void genbase(int i,int j)
-{
-	base b[i][j];
-	b[i][j].genbase(i,j);
-	drawbase(b[i][j]);
-}
 
 
 void play()   
@@ -154,15 +159,19 @@ void play()
 	double vy = -G ; //ความเร็ว Y
 	int slow  = 5 ;  //gravity น้อย=ตกเร็ว  **
 
+	base b[3][3];
 
 	for(int i=0; i<3 ;i++)
 	{
 		for(int j=0; j<3 ;j++)
 		{
-			genbase(i,j);
+			b[i][j].gen(i,j);
+			drawbase(b[i][j]);
+			b[i][j].showdata(i,j);
 		}
 	}
-	
+
+
 	while(1)
 	{
 		char CT = control() ;
