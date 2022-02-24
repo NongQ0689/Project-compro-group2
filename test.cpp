@@ -116,13 +116,29 @@ class base
 	bool appear = 1 ;
 	void gen(int,int);
 	void showdata(int,int);
+	bool check();
 };
+
+bool base::check()
+{
+	bool x = (( DDposx >= posx-BL/2) && ( DDposx <= posx+BL/2));
+	bool y = ( DDposy >= posy-1);
+	if( x&&y)
+	{
+		appear = 0;
+		posx=0;
+		posy=0;
+		return 1;
+	}
+	return 0;
+}
 
 void base::showdata(int i ,int j )
 {
 	gotoxy(40+i*40,50+j); 	cout<<"posx = "<<posx ;
 					 		cout<<"  posy = "<<posy;
 					 		cout<<"  BL = "<<BL;
+							cout<<"  AP = "<<appear;
 }
 
 void base::gen(int i , int j)
@@ -132,14 +148,16 @@ void base::gen(int i , int j)
 	BL = 16+(rand()%4*2);
 }
 
-void drawbase(base base)   //แสดงDD
-{ 
-	if(base.appear){gotoxy(base.posx-base.BL/2,base.posy) ; for(int i=0;i<base.BL;i++) cout<<"=" ;}
-	else 		   {gotoxy(base.posx-base.BL/2,base.posy) ; for(int i=0;i<base.BL;i++) cout<<" " ;}
-}
-void erasebase(base base)   //แสดงDD
+
+void erasebase(base base)   //แสดงbase
 { 
 	gotoxy(base.posx-base.BL/2,base.posy) ; for(int i=0;i<base.BL;i++) cout<<" " ;
+}
+
+void drawbase(base base)   //แสดงbase
+{ 
+	if(base.appear){gotoxy(base.posx-base.BL/2,base.posy) ; for(int i=0;i<base.BL;i++) cout<<"=" ;}
+	else erasebase(base);
 }
 
 base b[3][3];
@@ -149,6 +167,7 @@ void drawallbase()
 	for(int i=0;i<3;i++){ for(int j=0;j<3;j++) { drawbase(b[i][j]); } }
 	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
 }
+
 
 void basestart ()	//สร้างฐาน 3x3
 {
@@ -163,19 +182,6 @@ void basestart ()	//สร้างฐาน 3x3
 	drawallbase();
 }
 
-bool check(base &b)
-{
-	bool x = (( DDposx >= b.posx-b.BL/2) && ( DDposx <= b.posx+b.BL/2));
-	bool y = ( DDposy == b.posy);
-	if( x&&y)
-	{
-		b.appear = 0;
-		b.posx=0;
-		b.posy=0;
-		return 1;
-	}
-	return 0;
-}
 
 void play()   
 {
@@ -200,8 +206,6 @@ void play()
 		gotoxy(70,66); cout<<" P= "<< point <<"  ";
 
 		//รอเขียน dy ใหม่
-
-
 		dy += vy ;
 		vy += ay ;
 		if( vy > uy ) vy = -uy;
@@ -223,8 +227,12 @@ void play()
 
 	//draw
 		drawDD();
-		drawallbase();
-		for(int i=0;i<3;i++){ for(int j=0;j<3;j++) if(check(b[i][j])) point++ ; }
+		//drawallbase();
+		/*for(int i=0;i<3;i++){ for(int j=0;j<3;j++) 
+		{
+			b[i][j].showdata(i,j);	
+			if(b[i][j].check()) point++ ; }
+		}*/
 		Sleep(10); 	
 	//erase
 		eraseDD();
