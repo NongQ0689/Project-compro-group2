@@ -146,7 +146,8 @@ base b[3][3];
 	
 void drawallbase()
 {
-	for(int i;i<3;i++){ for(int j;j<3;j++) { drawbase(b[i][j]); } }
+	for(int i=0;i<3;i++){ for(int j=0;j<3;j++) { drawbase(b[i][j]); } }
+	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
 }
 
 void basestart ()	//สร้างฐาน 3x3
@@ -156,10 +157,10 @@ void basestart ()	//สร้างฐาน 3x3
 		for(int j=0; j<3 ;j++)
 		{
 			b[i][j].gen(i,j);
-			drawbase(b[i][j]);
 			b[i][j].showdata(i,j);
 		}
 	}
+	drawallbase();
 }
 
 bool check(base b)
@@ -180,6 +181,7 @@ void play()
 	double fps = 30 , ptime = time(0)-2 ;
 	int countfps = 0 ;
 
+	basestart();
 
 	while(1)
 	{
@@ -250,7 +252,7 @@ int main()
 
 		char op = getche();
 		     if( op=='1') { system("cls"); drawBorder(); play(); }
-		else if( op=='2') {drawDD();getche();}
+		else if( op=='2') {drawDD();basestart();getche();}
 		else if( op=='3') exit(0);
 
 	}while(1);
