@@ -186,18 +186,29 @@ void EndScreen()
 	}
 	else{
 	system("cls"); drawBorder();
-	gotoxy(10,6);  cout << " ------------------------------------------------------------------------- "<<endl;
-	gotoxy(10,8);  cout << "|    *****      *     *       * ******       ****  *       ****** ****    |"<<endl;
-	gotoxy(10,9);  cout << "|   *          * *    * *   * * *           *    *  *     * *     *   *   |"<<endl;
-	gotoxy(10,10); cout << "|   +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   |"<<endl;
-	gotoxy(10,11); cout << "|   *  *  *  *******  *   *   * *           *    *    * *   *     * *     |"<<endl;
-	gotoxy(10,12); cout << "|    *****  *       * *       * ******       ****      *    ***** *   *   |"<<endl;
+	gotoxy(10,7);  cout << " ------------------------------------------------------------------------- "<<endl;
+	gotoxy(10,8);  cout << "|    *****      *     *       * ******      *       * ******* *       *   |"<<endl;
+	gotoxy(10,9);  cout << "|   *          * *    * *   * * *           *   *   *    *    * *     *   |"<<endl;
+	gotoxy(10,10); cout << "|   *  ****   *   *   *  * *  * *****       *  * *  *    *    *   *   *   |"<<endl;
+	gotoxy(10,11); cout << "|   *  *  *  *******  *   *   * *           * *   * *    *    *     * *   |"<<endl;
+	gotoxy(10,12); cout << "|    *****  *       * *       * ******      *       * ******* *       *   |"<<endl;
 	gotoxy(10,13); cout << " ------------------------------------------------------------------------- "<<endl;
 	gotoxy(10,15); //showscore();
 	gotoxy(10, 17); cout << "Press x to return to menu";
 	char op ;
 	do{ op = getch();}while(op != 'x');
 	}
+}
+
+void instructions(){
+	system("cls"); drawBorder();
+	gotoxy(10,5); cout<<  "     Collecting the alphabets A-Z each gain 1 point"; 
+	gotoxy(10,6); cout<<  "          Not depend on order,Max 26 points "; 
+	gotoxy(10,7); cout<<  "Every point you gain make the alphabets falling down faster";
+	gotoxy(10,9); cout<<  "  If one single alphabet hit the ground the game is over";
+	gotoxy(22,12); cout<< "Press x to return to menu";	 
+	char op;
+	do{ op = getch(); break;}while(op != 'x');
 }
 
 ABCD CH[8];
@@ -214,20 +225,19 @@ void play()
 	
 	for(int j=0;j<8;j++) CH[j].gen(i++) ;
 	bool jump = 0;
+	gotoxy(2,33); for(int i=0; i<98; i++) cout << "=";
 
 	while(!gameover)
 	{
 		
 		char CT = control() ;
 		if(CT =='x') { break ; } //exit ( esc )
-		if(CT ==' ') { jump=1;}
+		if(CT =='w') { jump=1;}
 		if(CT =='s') { }
 		if(CT =='a') { dx = -vx ; }
 		if(CT =='d') { dx =  vx ; }
 
-		gotoxy(70,46); cout<<" dy= "<< dy <<"  ";
-		gotoxy(70,56); cout<<" vy= "<< vy <<"  ";
-		gotoxy(70,59); cout<<" P= "<< point <<"  ";
+		gotoxy(44,37); cout<<" POINT = "<< point <<"  ";
 
 		//รอเขียน dy ใหม่
 		if(jump)
@@ -307,7 +317,7 @@ int main()
 
 		char op = getche();
 		     if( op=='1') { system("cls"); drawBorder();  play();   EndScreen();   gameover = 0 ;} //**
-		else if( op=='2') {drawDD();getche();}
+		else if( op=='2') {drawDD();getche();instructions();}
 		else if( op=='3') exit(0);
 
 	}while(1);
@@ -315,3 +325,4 @@ int main()
 
 	return 0;
 }
+
