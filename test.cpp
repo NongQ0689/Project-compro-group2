@@ -17,9 +17,6 @@ HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
 
 
-int DDposx , DDposy ;
-int baseposx[4] ;
-int baseposy[4] ;
 
 void gotoxy(int x, int y)
 {
@@ -130,7 +127,7 @@ void base::gen(int i , int j)
 {
 	posx = (i+1)*20+rand()%5;
 	posy = (j+1)*10+rand()%5;
-	BL = 12+(rand()%3*2);
+	BL = 12+(rand()%4*2);
 }
 
 
@@ -140,26 +137,46 @@ void drawbase(base base)   //แสดงDD
 	else 		   {gotoxy(base.posx-base.BL/2,base.posy) ; cout<<"          " ;}
 }
 
+void erasebase(base base)   //แสดงDD
+{ 
+	gotoxy(base.posx-base.BL/2,base.posy) ; cout<<"          " ;
+}
 
-
-void play()   
+bool check()
 {
+	for(int i=0; i<3 ;i++)
+	{
+		for(int j=0; j<3 ;j++)
+		{
+			if(( DDposx >= b[i][j].posx-b[i][j].BL/2) && ( DDposx <= b[i][j].posx+b[i][j].BL/2))
+			{
+				
+			}
+		}
+	}
+}
+
 	double fps = 30 , ptime = time(0)-2 ;
 	int countfps = 0 ;
 
 	int STX = 50 ,  STY = 35 ;	//ตำแหน่ง X Y เริ่ม  ( บนน้อย , ล่างมาก )  **
 
-	DDposx = STX ; DDposy = STY ;
+	int DDposx = STX ; int DDposy = STY ;
 	int dx = STX ;         //ตำแหน่ง X ในอนาคต
 	int vx = 2 ;     		//ความเร็ว X  **
 	
     
-    double dy = DDposy ; 	 //ตำแหน่ง Y ในอนาคต    
-	double G  = 13 ; //ความสูงที่กระโดดได้  **
-	double vy = -G ; //ความเร็ว Y
-	int slow  = 5 ;  //gravity น้อย=ตกเร็ว  **
+    double dy = DDposy ; 	 //ตำแหน่ง Y ในอนาคต  
+	double uy = 4 ;  //ความเร็วต้น Y **
+	double vy = -uy ; //ความเร็ว Y
+	double ay = 0.4 ; //แรงโน้มถ่วง
 
-	base b[3][3];
+	base b[3][3];	
+
+
+void play()   
+{
+
 
 	for(int i=0; i<3 ;i++)
 	{
@@ -186,18 +203,12 @@ void play()
 
 		//รอเขียน dy ใหม่
 
-		if(vy>0)
-		{
-			dy+=vy/slow;
-			vy++ ;
-			if(vy==G) vy=-G+1;
-		} 
-		if(vy<0)
-		{
-			dy+=vy/slow;
-			vy++ ;
-			if(vy==0) vy=1;
-		}
+
+		dy += vy ;
+		vy += ay ;
+		if( vy > uy ) vy = -uy;
+
+
 
 		DDposx += dx ;
 		DDposy = dy ;
@@ -215,8 +226,10 @@ void play()
 
 	//draw
 		drawDD();
+		for(int i;i<3;i++){ for(int j;j<3;j++) { drawbase(b[i][j]); } }
 		Sleep(10); 	
 	//erase
+		for(int i;i<3;i++){ for(int j;j<3;j++) erasebase(b[i][j]); }
 		eraseDD();
 	
 
