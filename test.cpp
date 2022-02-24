@@ -58,6 +58,7 @@ char control()   //เช็คการกดปุ่ม ตอนเล่น
 		if(ch=='a') {return 'a' ;}
 		if(ch=='s') {return 's' ;}
 		if(ch=='d') {return 'd' ;}
+		if(ch==' ') {return ' ' ;}
 		if(ch== 27) {return 'x' ;}	//ESC
 	}return '-' ;  // non
 }
@@ -66,11 +67,17 @@ char dookdik[4][5] = {   ' ','_','_','_',' ',
 						 '(','o','>','o',')',
 						 '/','_','_','_','\\',
 						 ' ','l',' ','l',' '  };
-					
 
 //     ___ 
 //    (o>o)
-// 	  /___\
+// 	  \___/    
+//	   l l 
+//    
+//    dookdik
+
+//     ___ 
+//    (o>o)
+// 	  /___\   	โดด
 //	   l l 
 //    
 //    dookdik
@@ -79,14 +86,17 @@ char dookdik[4][5] = {   ' ','_','_','_',' ',
 	int STX = 50 ,  STY = 32 ;	//ตำแหน่ง X Y เริ่ม  ( บนน้อย , ล่างมาก )  **
 
 	int DDposx = STX ; int DDposy = STY ;
-	int dx = STX ;         //ตำแหน่ง X ในอนาคต
+	int dx = 0 ;         //ตำแหน่ง X ในอนาคต
 	int vx = 2 ;     		//ความเร็ว X  **
 	
     
     double dy = DDposy ; 	 //ตำแหน่ง Y ในอนาคต  
 	double uy = 3 ;  //ความเร็วต้น Y **
 	double vy = -uy ; //ความเร็ว Y
-	double ay = 0.4 ; //แรงโน้มถ่วง
+	double ay = 0.5 ; //แรงโน้มถ่วง
+
+
+	int point = 0;
 
 
 void drawDD(){
@@ -112,38 +122,43 @@ class ABCD
 	public :
 	char CH ;
 	int posx;
-	int posy;
+	double posy;
 	bool appear = 1 ;
-	void gen(int);
-	void showdata(int,int);
+	void gen(char);
 	bool check();
 };
 
-void ABCD::gen(int i)
+void ABCD::gen(char i)
 {
-	CH = i;
-	posy = 5;
+	CH = i ;
+	posy = 2 + rand()%6 ;
 	posx = rand()%61+20;
+	appear = 1;
 }
 
 void move(ABCD &f)
 {
 	if(f.appear)
 	{
-		f.posy +=1 ;
-		gotoxy(f.posx,f.posy-1); cout<<" ";
+		f.posy += 0.1 + 0.005*point ;
+		gotoxy(f.posx,f.posy-1); cout<< " ";
 		gotoxy(f.posx,f.posy); cout<<f.CH;
 	}
 }
 
+bool gameover = 0;
 
 bool ABCD::check()
 {
-	bool x = ( DDposx >= posx-2) && ( DDposx <= posx+2);
-	bool y = ( DDposy >= posy-4);
-	if( x&&y)
+	bool x = ( DDposx >= posx-3) && ( DDposx <= posx+3);
+	bool y = ( posy >= DDposy-3 &&  posy <= DDposy);
+	bool out = (posy >= 35);
+	if(out) gameover=1;
+	if(x&&y||out)
 	{
 		appear = 0;
+		gotoxy(posx,posy);
+		cout<<" ";
 		posx=0;
 		posy=0;
 		return 1;
@@ -151,14 +166,41 @@ bool ABCD::check()
 	return 0;
 }
 
-void ABCD::showdata(int i ,int j )
+
+void EndScreen()
 {
-	gotoxy(40+i*40,50+j); 	cout<<"posx = "<<posx ;
-					 		cout<<"  posy = "<<posy;
-							cout<<"  AP = "<<appear;
+	if(gameover)
+	{
+	system("cls"); drawBorder();
+	gotoxy(10,6);  cout << " ------------------------------------------------------------------------- "<<endl;
+	gotoxy(10,8);  cout << "|    *****      *     *       * ******       ****  *       ****** ****    |"<<endl;
+	gotoxy(10,9);  cout << "|   *          * *    * *   * * *           *    *  *     * *     *   *   |"<<endl;
+	gotoxy(10,10); cout << "|   *  ****   *   *   *  * *  * *****       *    *   *   *  ****  ****    |"<<endl;
+	gotoxy(10,11); cout << "|   *  *  *  *******  *   *   * *           *    *    * *   *     * *     |"<<endl;
+	gotoxy(10,12); cout << "|    *****  *       * *       * ******       ****      *    ***** *   *   |"<<endl;
+	gotoxy(10,13); cout << " ------------------------------------------------------------------------- "<<endl;
+	gotoxy(10,15); //showscore();
+	gotoxy(10, 17); cout << "Press x to return to menu";
+	char op ;
+	do{ op = getch();}while(op != 'x');
+	}
+	else{
+	system("cls"); drawBorder();
+	gotoxy(10,6);  cout << " ------------------------------------------------------------------------- "<<endl;
+	gotoxy(10,8);  cout << "|    *****      *     *       * ******       ****  *       ****** ****    |"<<endl;
+	gotoxy(10,9);  cout << "|   *          * *    * *   * * *           *    *  *     * *     *   *   |"<<endl;
+	gotoxy(10,10); cout << "|   +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   |"<<endl;
+	gotoxy(10,11); cout << "|   *  *  *  *******  *   *   * *           *    *    * *   *     * *     |"<<endl;
+	gotoxy(10,12); cout << "|    *****  *       * *       * ******       ****      *    ***** *   *   |"<<endl;
+	gotoxy(10,13); cout << " ------------------------------------------------------------------------- "<<endl;
+	gotoxy(10,15); //showscore();
+	gotoxy(10, 17); cout << "Press x to return to menu";
+	char op ;
+	do{ op = getch();}while(op != 'x');
+	}
 }
 
-ABCD CH[5];
+ABCD CH[8];
 
 void play()   
 {
@@ -166,28 +208,37 @@ void play()
 	double fps = 30 , ptime = time(0)-1 ;
 	int countfps = 0 ;
 
-	int point = 0;
-	int i = 10;
 	
-	for(int j=0;j<5;j++) CH[j].gen(i+j) ;
+	char i = 'A';
+	point = 0 ;
+	
+	for(int j=0;j<8;j++) CH[j].gen(i++) ;
+	bool jump = 0;
 
-	while(1)
+	while(!gameover)
 	{
+		
 		char CT = control() ;
 		if(CT =='x') { break ; } //exit ( esc )
-		if(CT =='w') { }
+		if(CT ==' ') { jump=1;}
 		if(CT =='s') { }
-		if(CT =='a') { dx =  -vx ; }
+		if(CT =='a') { dx = -vx ; }
 		if(CT =='d') { dx =  vx ; }
 
 		gotoxy(70,46); cout<<" dy= "<< dy <<"  ";
 		gotoxy(70,56); cout<<" vy= "<< vy <<"  ";
-		gotoxy(70,66); cout<<" P= "<< point <<"  ";
+		gotoxy(70,59); cout<<" P= "<< point <<"  ";
 
 		//รอเขียน dy ใหม่
+		if(jump)
+		{
 		dy += vy ;
 		vy += ay ;
-		if( vy > uy ) vy = -uy;
+		if( vy > 0 ) { dookdik[2][0]='\\';dookdik[2][4]='/';}
+		else 		 { dookdik[2][0]='/';dookdik[2][4]='\\';}
+		if( vy > uy ) {vy = -uy; jump=0;}
+		}
+
 
 		DDposx += dx ;
 		DDposy = dy ;
@@ -200,25 +251,36 @@ void play()
 		gotoxy(60,45); cout<<"  Y = " <<DDposy<<" ";    //Show data DDposY
 	    gotoxy(10,45); cout<<"  FPS = ";                //Show data FPS
 
-		if(time(0)-ptime == 1 ) { ptime=time(0) ; gotoxy(18,45); fps = countfps ; cout<<(fps)<<"   " ;  countfps=0 ; 
-		
-		for(int i=0;i<5;i++)
+		if(time(0)-ptime == 1 ) { ptime=time(0) ; gotoxy(18,45); fps = countfps ; cout<<(fps)<<"   " ;  countfps=0 ; }  //update data FPS every 2sec
+		else { countfps++; } 
+
+
+		for(int i=0;i<8;i++)
 		move(CH[i]);
-		
-		
-		}  //update data FPS every 2sec
-		else { countfps++; }  
+
+		for(int j=0;j<8;j++)
+		if(CH[j].check())
+		{
+			point++;
+			CH[j].gen(i);
+			i++;
+			if(i > 'Z') i='A';
+		}
+
+		if(point==26) break;
 
 
 	//draw
 		drawDD();
-		Sleep(10); 	
+		Sleep(20); 	
 	//erase
 		eraseDD();
 	
 
 	gotoxy(SCREEN_WIDTH,SCREEN_HEIGHT); // กันcursor กระพริบ
 	}
+
+
 }
 
 
@@ -239,11 +301,12 @@ int main()
 		gotoxy(10,13); cout<<"Select option: ";
 
 
-		DDposx = 50 ;
-		DDposy = 35 ;
+		DDposx = STX ;
+		DDposy = STY ;
+		dx = 0;
 
 		char op = getche();
-		     if( op=='1') { system("cls"); drawBorder(); play(); }
+		     if( op=='1') { system("cls"); drawBorder();  play();   EndScreen();   gameover = 0 ;} //**
 		else if( op=='2') {drawDD();getche();}
 		else if( op=='3') exit(0);
 
