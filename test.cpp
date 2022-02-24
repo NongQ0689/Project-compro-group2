@@ -139,7 +139,7 @@ void drawbase(base base)   //แสดงDD
 }
 void erasebase(base base)   //แสดงDD
 { 
-	gotoxy(base.posx-base.BL/2,base.posy) ; cout<<"          " ;
+	gotoxy(base.posx-base.BL/2,base.posy) ; for(int i=0;i<base.BL;i++) cout<<" " ;
 }
 
 base b[3][3];
@@ -163,13 +163,15 @@ void basestart ()	//สร้างฐาน 3x3
 	drawallbase();
 }
 
-bool check(base b)
+bool check(base &b)
 {
 	bool x = (( DDposx >= b.posx-b.BL/2) && ( DDposx <= b.posx+b.BL/2));
 	bool y = ( DDposy == b.posy);
 	if( x&&y)
 	{
 		b.appear = 0;
+		b.posx=0;
+		b.posy=0;
 		return 1;
 	}
 	return 0;
@@ -182,6 +184,7 @@ void play()
 	int countfps = 0 ;
 
 	basestart();
+	int point = 0;
 
 	while(1)
 	{
@@ -194,6 +197,7 @@ void play()
 
 		gotoxy(70,46); cout<<" dy= "<< dy <<"  ";
 		gotoxy(70,56); cout<<" vy= "<< vy <<"  ";
+		gotoxy(70,66); cout<<" P= "<< point <<"  ";
 
 		//รอเขียน dy ใหม่
 
@@ -220,6 +224,7 @@ void play()
 	//draw
 		drawDD();
 		drawallbase();
+		for(int i=0;i<3;i++){ for(int j=0;j<3;j++) if(check(b[i][j])) point++ ; }
 		Sleep(10); 	
 	//erase
 		eraseDD();
