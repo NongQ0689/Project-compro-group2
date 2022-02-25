@@ -166,35 +166,70 @@ bool ABCD::check()
 	return 0;
 }
 
+void ClrPsc(){
+	gotoxy(22,43); cout << "                                                            ";
+	gotoxy(22,44); cout << "                                                            ";
+	gotoxy(22,45); cout << "                                                            ";
+	gotoxy(22,46); cout << "                                                            ";
+	gotoxy(22,47); cout << "                                                            ";
+}
+
+void GainPsc(int G){
+	G = rand()%3;
+	if(G == 0){
+		ClrPsc();
+		gotoxy(31,43); cout << "  *****  *****   ******     *     ******* "<<endl;
+		gotoxy(31,44); cout << " *       *    *  *         * *       *    "<<endl;
+		gotoxy(31,45); cout << "*  ***** *****   ******   *   *      *    "<<endl;
+		gotoxy(31,46); cout << " *     * *    *  *       *******     *    "<<endl;
+		gotoxy(31,47); cout << "  *****  *     * ****** *       *    *    "<<endl;
+	}
+	if(G == 1){
+		ClrPsc();
+		gotoxy(37,43); cout << "*     * *******   ***** ****** "<<endl;
+		gotoxy(37,44); cout << "* *   *    *     *      *      "<<endl;
+		gotoxy(37,45); cout << "*  *  *    *    *       ****** "<<endl;
+		gotoxy(37,46); cout << "*   * *    *     *      *      "<<endl;
+		gotoxy(37,47); cout << "*     * *******   ***** ****** "<<endl;
+	}
+	if(G == 2){
+		ClrPsc();
+		gotoxy(36,43); cout << "  *****   *****   *****  *****   "<<endl;
+		gotoxy(36,44); cout << " *       *     * *     * *    *  "<<endl;
+		gotoxy(36,45); cout << "*  ***** *     * *     * *     * "<<endl;
+		gotoxy(36,46); cout << " *     * *     * *     * *    *  "<<endl;
+		gotoxy(36,47); cout << "  *****   *****   *****  *****   "<<endl;
+	}
+}
 
 void EndScreen()
 {
 	if(gameover)
 	{
 	system("cls"); drawBorder();
-	gotoxy(10,6);  cout << " ------------------------------------------------------------------------- "<<endl;
-	gotoxy(10,8);  cout << "|    *****      *     *       * ******       ****  *       ****** ****    |"<<endl;
-	gotoxy(10,9);  cout << "|   *          * *    * *   * * *           *    *  *     * *     *   *   |"<<endl;
-	gotoxy(10,10); cout << "|   *  ****   *   *   *  * *  * *****       *    *   *   *  ****  ****    |"<<endl;
-	gotoxy(10,11); cout << "|   *  *  *  *******  *   *   * *           *    *    * *   *     * *     |"<<endl;
-	gotoxy(10,12); cout << "|    *****  *       * *       * ******       ****      *    ***** *   *   |"<<endl;
-	gotoxy(10,13); cout << " ------------------------------------------------------------------------- "<<endl;
-	gotoxy(10,15); cout<<" POINT = "<< point <<"  ";
-	gotoxy(10, 17); cout << "Press x to return to menu";
+	gotoxy(14,6);  cout << " ------------------------------------------------------------------------- "<<endl;
+	gotoxy(14,8);  cout << "|    *****      *     *       * ******       ****  *       ****** ****    |"<<endl;
+	gotoxy(14,9);  cout << "|   *          * *    * *   * * *           *    *  *     * *     *   *   |"<<endl;
+	gotoxy(14,10); cout << "|   *  ****   *   *   *  * *  * *****       *    *   *   *  ****  ****    |"<<endl;
+	gotoxy(14,11); cout << "|   *  *  *  *******  *   *   * *           *    *    * *   *     * *     |"<<endl;
+	gotoxy(14,12); cout << "|    *****  *       * *       * ******       ****      *    ***** *   *   |"<<endl;
+	gotoxy(14,13); cout << " ------------------------------------------------------------------------- "<<endl;
+	gotoxy(14,15); cout<<"TOTAL POINT = "<< point <<"  ";
+	gotoxy(14, 17); cout << "Press x to return to menu";
 	char op ;
 	do{ op = getch();}while(op != 'x');
 	}
 	else{
 	system("cls"); drawBorder();
-	gotoxy(10,7);  cout << " ------------------------------------------------------------------------- "<<endl;
-	gotoxy(10,8);  cout << "|    *****      *     *       * ******      *       * ******* *       *   |"<<endl;
-	gotoxy(10,9);  cout << "|   *          * *    * *   * * *           *   *   *    *    * *     *   |"<<endl;
-	gotoxy(10,10); cout << "|   *  ****   *   *   *  * *  * *****       *  * *  *    *    *   *   *   |"<<endl;
-	gotoxy(10,11); cout << "|   *  *  *  *******  *   *   * *           * *   * *    *    *     * *   |"<<endl;
-	gotoxy(10,12); cout << "|    *****  *       * *       * ******      *       * ******* *       *   |"<<endl;
-	gotoxy(10,13); cout << " ------------------------------------------------------------------------- "<<endl;
-	gotoxy(10,15); cout<<" POINT = "<< point <<"  ";
-	gotoxy(10, 17); cout << "Press x to return to menu";
+	gotoxy(14,7);  cout << " ------------------------------------------------------------------------- "<<endl;
+	gotoxy(14,8);  cout << "|    *****      *     *       * ******      *       * ******* *       *   |"<<endl;
+	gotoxy(14,9);  cout << "|   *          * *    * *   * * *           *   *   *    *    * *     *   |"<<endl;
+	gotoxy(14,10); cout << "|   *  ****   *   *   *  * *  * *****       *  * *  *    *    *   *   *   |"<<endl;
+	gotoxy(14,11); cout << "|   *  *  *  *******  *   *   * *           * *   * *    *    *     * *   |"<<endl;
+	gotoxy(14,12); cout << "|    *****  *       * *       * ******      *       * ******* *       *   |"<<endl;
+	gotoxy(14,13); cout << " ------------------------------------------------------------------------- "<<endl;
+	gotoxy(14,15); cout<<"TOTAL POINT = "<< point <<"  ";
+	gotoxy(14, 17); cout << "Press x to return to menu";
 	char op ;
 	do{ op = getch();}while(op != 'x');
 	}
@@ -256,11 +291,6 @@ void play()
 		if(DDposx<7) { DDposx = SCREEN_WIDTH-2 ; }  if(DDposx>SCREEN_WIDTH-2)  { DDposx = 7 ;}  //ชนขอบ X
 		if(DDposy<1) { DDposy = 1 ; }  if(DDposy>WIN_HEIGHT-1)    { DDposy = WIN_HEIGHT-1 ; }  //ชนขอบ Y
 
-		gotoxy(40,45); cout<<"  CT = "<<CT;             //Show data ปุ่มกด wasd-
-		gotoxy(50,45); cout<<"  X = " <<DDposx<<" ";    //Show data DDposX
-		gotoxy(60,45); cout<<"  Y = " <<DDposy<<" ";    //Show data DDposY
-	    gotoxy(10,45); cout<<"  FPS = ";                //Show data FPS
-
 		if(time(0)-ptime == 1 ) { ptime=time(0) ; gotoxy(18,45); fps = countfps ; cout<<(fps)<<"   " ;  countfps=0 ; }  //update data FPS every 2sec
 		else { countfps++; } 
 
@@ -268,13 +298,15 @@ void play()
 		for(int i=0;i<8;i++)
 		move(CH[i]);
 
-		for(int j=0;j<8;j++)
-		if(CH[j].check())
-		{
-			point++;
-			CH[j].gen(i);
-			i++;
-			if(i > 'Z') i='A';
+		for(int j=0;j<8;j++){
+			if(CH[j].check())
+			{
+				point++;
+				CH[j].gen(i);
+				i++;
+				if(i > 'Z') i='A';
+				GainPsc(point);
+			}
 		}
 
 		if(point==26) break;
@@ -303,7 +335,7 @@ int main()
 		system("cls");
         drawBorder();
 		gotoxy(10,5); cout<<" -------------------------- "; 
-		gotoxy(10,6); cout<<" |      test.exe       | "; 
+		gotoxy(10,6); cout<<" |      Go Go Jump!!!     | "; 
 		gotoxy(10,7); cout<<" --------------------------";
 		gotoxy(10,9); cout<<"1. Start Game";
 		gotoxy(10,10); cout<<"2. Instructions";	 
